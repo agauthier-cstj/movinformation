@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MovInformation</string>
+    <string name="title_section1">Cinemas</string>
+    <string name="title_section2">Films</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="test">Cinema Fragment</string>
+    <string name="testdetail">Detail Fragment</string>
+    <string name="testhoraire">Horaire Fragment</string>
+    <string name="testfilm">Film Fragment</string>
+    <string-array name="lstTest">
+        <item>Film 1</item>
+        <item>Film 2</item>
+        <item>Film 3</item>
+        <item>Film 4</item>
+        <item>Film 5</item>
+    </string-array>
+
+
+</resources>
