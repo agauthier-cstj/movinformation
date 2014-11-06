@@ -26,8 +26,14 @@ public class Films {
         classe = jsonObject.getAsJsonPrimitive("classe").getAsString();
         duree = jsonObject.getAsJsonPrimitive("duree").getAsInt();
         realisateur = jsonObject.getAsJsonPrimitive("realisateur").getAsString();
-        imageUrl = jsonObject.getAsJsonPrimitive("imageUrl").getAsString();
+        try{
+            imageUrl = jsonObject.getAsJsonPrimitive("imageUrl").getAsString();
+        }
+        catch (Exception e)
+        {}
     }
+
+    public String toString(){return "allo";}
 
     public String getHref() {
         return href;

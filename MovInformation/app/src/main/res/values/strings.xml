@@ -12,13 +12,4 @@
     <string name="testdetail">Detail Fragment</string>
     <string name="testhoraire">Horaire Fragment</string>
     <string name="testfilm">Film Fragment</string>
-    <string-array name="lstTest">
-        <item>Film 1</item>
-        <item>Film 2</item>
-        <item>Film 3</item>
-        <item>Film 4</item>
-        <item>Film 5</item>
-    </string-array>
-
-
 </resources>
