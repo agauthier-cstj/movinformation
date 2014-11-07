@@ -1,13 +1,16 @@
 package ca.qc.cstj.android.movinformation;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
 
 
 /**
@@ -22,6 +25,11 @@ import android.view.ViewGroup;
 public class CinemaFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    //Variables - Tommy
+    private ListView lstCinemas;
+    private ProgressDialog progressDialog;
+    //private CinemaAdapter filmAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -42,11 +50,20 @@ public class CinemaFragment extends Fragment {
 
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cinema, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        lstCinemas = (ListView) getActivity().findViewById(R.id.list_cinemas);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
