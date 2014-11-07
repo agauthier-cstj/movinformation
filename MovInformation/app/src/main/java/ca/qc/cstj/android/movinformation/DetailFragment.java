@@ -1,13 +1,23 @@
 package ca.qc.cstj.android.movinformation;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
+import ca.qc.cstj.android.movinformation.models.Films;
 
 
 /**
@@ -24,7 +34,22 @@ public class DetailFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_HREF = "href";
 
+    //Variables - Anthony Gauthier
+    private ListView lstCommentaire;
+    private ProgressDialog progressDialog;
+    private FilmAdapter filmAdapter;
+
     private String href;
+    private TextView titreFilm;
+    private TextView paysFilm;
+    private TextView genreFilm;
+    private TextView classeFilm;
+    private TextView realisateurFilm;
+    private TextView dureeFilm;
+    private Button btnAjouterComment;
+
+    private Films film;
+
     private OnFragmentInteractionListener mListener;
 
     public static DetailFragment newInstance(String href) {
@@ -48,17 +73,52 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des données...",true,false);
+
+        Ion.with(getActivity())
+                .load(href)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject jsonObject) {
+                        film = new Films(jsonObject);
+
+                        titreFilm.setText(film.getTitre());
+                        paysFilm.setText(film.getPays());
+                        genreFilm.setText(film.getGenre());
+                        classeFilm.setText(film.getClasse());
+                        realisateurFilm.setText("Réalisé par: "+film.getRealisateur());
+                        dureeFilm.setText("Durée: "+film.getDuree()+" minutes");
+                        progressDialog.dismiss();
+                    }
+                });
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        titreFilm = (TextView) view.findViewById(R.id.titreFilm);
+        paysFilm = (TextView) view.findViewById(R.id.paysFilm);
+        genreFilm = (TextView) view.findViewById(R.id.genreFilm);
+        classeFilm = (TextView) view.findViewById(R.id.classeFilm);
+        realisateurFilm = (TextView) view.findViewById(R.id.realisateurFilm);
+        dureeFilm = (TextView) view.findViewById(R.id.dureeFilm);
+        btnAjouterComment = (Button) view.findViewById(R.id.btnAjouterComment);
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        btnAjouterComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //sauvegarderEmploye();
+            }
+        });
+
+        return view;
     }
 
     @Override

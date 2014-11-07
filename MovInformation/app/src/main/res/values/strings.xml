@@ -14,4 +14,5 @@
     <string name="testfilm">Film Fragment</string>
     <string name="lblCommentaire">Commentaire</string>
     <string name="lblAjoutCommentaire">Ajouter un commentaire</string>
+    <string name="btnComment">Ajouter commentaire</string>
 </resources>

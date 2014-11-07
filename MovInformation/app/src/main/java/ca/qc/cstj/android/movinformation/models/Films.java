@@ -11,7 +11,7 @@ public class Films {
     private String pays;
     private String genre;
     private String classe;
-    private int duree;
+    private String duree;
     private String realisateur;
     private String imageUrl;
 
@@ -24,7 +24,7 @@ public class Films {
         pays = jsonObject.getAsJsonPrimitive("pays").getAsString();
         genre = jsonObject.getAsJsonPrimitive("genre").getAsString();
         classe = jsonObject.getAsJsonPrimitive("classe").getAsString();
-        duree = jsonObject.getAsJsonPrimitive("duree").getAsInt();
+        duree = jsonObject.getAsJsonPrimitive("duree").getAsString();
         realisateur = jsonObject.getAsJsonPrimitive("realisateur").getAsString();
         try{
             imageUrl = jsonObject.getAsJsonPrimitive("imageUrl").getAsString();
@@ -75,11 +75,11 @@ public class Films {
         this.classe = classe;
     }
 
-    public int getDuree() {
+    public String getDuree() {
         return duree;
     }
 
-    public void setDuree(int duree) {
+    public void setDuree(String duree) {
         this.duree = duree;
     }
 
