@@ -12,4 +12,6 @@
     <string name="testdetail">Detail Fragment</string>
     <string name="testhoraire">Horaire Fragment</string>
     <string name="testfilm">Film Fragment</string>
+    <string name="lblCommentaire">Commentaire</string>
+    <string name="lblAjoutCommentaire">Ajouter un commentaire</string>
 </resources>
