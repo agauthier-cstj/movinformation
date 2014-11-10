@@ -15,4 +15,5 @@
     <string name="lblCommentaire">Commentaire</string>
     <string name="lblAjoutCommentaire">Ajouter un commentaire</string>
     <string name="btnComment">Ajouter commentaire</string>
+    <string name="noteSurDix">/10</string>
 </resources>
