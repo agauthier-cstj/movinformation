@@ -12,10 +12,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import ca.qc.cstj.android.movinformation.adapters.CommentaireAdapter;
 import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
 import ca.qc.cstj.android.movinformation.models.Films;
 
@@ -38,6 +41,7 @@ public class DetailFragment extends Fragment {
     private ListView lstCommentaire;
     private ProgressDialog progressDialog;
     private FilmAdapter filmAdapter;
+    private CommentaireAdapter commentaireAdapter;
 
     private String href;
     private TextView titreFilm;
@@ -95,6 +99,19 @@ public class DetailFragment extends Fragment {
                         progressDialog.dismiss();
                     }
                 });
+
+        Ion.with(getActivity())
+                .load(href+"/commentaires")
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray jsonElements) {
+                        for(JsonElement element : jsonElements)
+                        {
+                            //commentaireAdapter.getView();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -114,7 +131,7 @@ public class DetailFragment extends Fragment {
         btnAjouterComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //sauvegarderEmploye();
+
             }
         });
 
