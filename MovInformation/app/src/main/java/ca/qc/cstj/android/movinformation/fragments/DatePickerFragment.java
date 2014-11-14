@@ -13,7 +13,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-import ca.qc.cstj.android.employus.helpers.DateParser;
+import ca.qc.cstj.android.movinformation.helpers.DateParser;
 
 public class DatePickerFragment extends DialogFragment
                 implements DatePickerDialog.OnDateSetListener {

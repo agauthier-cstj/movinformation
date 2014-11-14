@@ -85,10 +85,10 @@ public class CinemaFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                String href = cinemaAdapter.getItem(position).getHref();
+                String href = cinemaAdapter.getItem(position).getHref()+"/horaires";
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, DetailFragment.newInstance(href)).addToBackStack("");
+                transaction.replace(R.id.container, HoraireFragment.newInstance(href)).addToBackStack("");
                 transaction.commit();
             }
         });
@@ -96,7 +96,7 @@ public class CinemaFragment extends Fragment {
     }
 
     private void loadCinemas(){
-        progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des films...", true, false);
+        progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des cinémas...", true, false);
 
         Ion.with(getActivity())
                 .load(ServicesURI.CINEMAS_SERVICE_URI)
