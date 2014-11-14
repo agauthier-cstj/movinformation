@@ -95,6 +95,8 @@ public class HoraireFragment extends Fragment {
     private void loadHoraires() {
         progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des horaires...", true, false);
 
+
+
         Ion.with(getActivity())
                 .load(ServicesURI.CINEMAS_SERVICE_URI)
                 .asJsonArray()
