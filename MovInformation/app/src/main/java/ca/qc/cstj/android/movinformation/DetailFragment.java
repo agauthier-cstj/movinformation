@@ -3,6 +3,7 @@ package ca.qc.cstj.android.movinformation;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import org.apache.http.HttpStatus;
+
+import java.util.ArrayList;
 
 import ca.qc.cstj.android.movinformation.adapters.CommentaireAdapter;
 import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
@@ -44,6 +50,7 @@ public class DetailFragment extends Fragment {
     private FilmAdapter filmAdapter;
     private CommentaireAdapter commentaireAdapter;
 
+    //Pour le film
     private String href;
     private TextView titreFilm;
     private TextView paysFilm;
@@ -51,9 +58,8 @@ public class DetailFragment extends Fragment {
     private TextView classeFilm;
     private TextView realisateurFilm;
     private TextView dureeFilm;
-    private TextView unCommentaire;
-    private TextView unPseudoDate;
-    private TextView uneNote;
+
+    //Le bouton du fragment
     private Button btnAjouterComment;
 
     private Films film;
@@ -86,7 +92,9 @@ public class DetailFragment extends Fragment {
         super.onStart();
 
         progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des données...",true,false);
+        lstCommentaire = (ListView) getActivity().findViewById(R.id.lstCommentaires);
 
+        //On affiche les détails du film
         Ion.with(getActivity())
                 .load(href)
                 .asJsonObject()
@@ -105,17 +113,24 @@ public class DetailFragment extends Fragment {
                     }
                 });
 
+        //On affiche les commentaires du film
         Ion.with(getActivity())
                 .load(href+"/commentaires")
                 .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
+                .withResponse()
+                .setCallback(new FutureCallback<Response<JsonArray>>() {
                     @Override
-                    public void onCompleted(Exception e, JsonArray jsonElements) {
-                        for(JsonElement element : jsonElements)
-                        {
-                            unCommentaire.setText(commentaire.getCommentaire());
-                            unPseudoDate.setText(commentaire.getPseudo()+", "+commentaire.getDate());
-                            uneNote.setText(commentaire.getNote());
+                    public void onCompleted(Exception e, Response<JsonArray> jsonArrayResponse) {
+                        if (jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_OK) {
+                            ArrayList<Commentaires> commentaires = new ArrayList<Commentaires>();
+                            JsonArray jsonArray = jsonArrayResponse.getResult();
+                            for (JsonElement element : jsonArray) {
+                                commentaires.add(new Commentaires(element.getAsJsonObject()));
+                            }
+                            commentaireAdapter = new CommentaireAdapter(getActivity(), getActivity().getLayoutInflater(), commentaires);
+                            lstCommentaire.setAdapter(commentaireAdapter);
+                        } else {
+                            //Erreur 404 - Les films n'existent pas.
                         }
                     }
                 });
@@ -134,10 +149,6 @@ public class DetailFragment extends Fragment {
         realisateurFilm = (TextView) view.findViewById(R.id.realisateurFilm);
         dureeFilm = (TextView) view.findViewById(R.id.dureeFilm);
         btnAjouterComment = (Button) view.findViewById(R.id.btnAjouterComment);
-
-        unCommentaire = (TextView) view.findViewById(R.id.txtCommentaire);
-        unPseudoDate = (TextView) view.findViewById(R.id.txtPseudoDate);
-        uneNote = (TextView) view.findViewById(R.id.txtNote);
 
         btnAjouterComment.setOnClickListener(new View.OnClickListener() {
             @Override
