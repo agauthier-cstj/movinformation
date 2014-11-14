@@ -20,6 +20,7 @@ import com.koushikdutta.ion.Ion;
 
 import ca.qc.cstj.android.movinformation.adapters.CommentaireAdapter;
 import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
+import ca.qc.cstj.android.movinformation.models.Commentaires;
 import ca.qc.cstj.android.movinformation.models.Films;
 
 
@@ -50,9 +51,13 @@ public class DetailFragment extends Fragment {
     private TextView classeFilm;
     private TextView realisateurFilm;
     private TextView dureeFilm;
+    private TextView unCommentaire;
+    private TextView unPseudoDate;
+    private TextView uneNote;
     private Button btnAjouterComment;
 
     private Films film;
+    private Commentaires commentaire;
 
     private OnFragmentInteractionListener mListener;
 
@@ -108,7 +113,9 @@ public class DetailFragment extends Fragment {
                     public void onCompleted(Exception e, JsonArray jsonElements) {
                         for(JsonElement element : jsonElements)
                         {
-                            //commentaireAdapter.getView();
+                            unCommentaire.setText(commentaire.getCommentaire());
+                            unPseudoDate.setText(commentaire.getPseudo()+", "+commentaire.getDate());
+                            uneNote.setText(commentaire.getNote());
                         }
                     }
                 });
@@ -127,6 +134,10 @@ public class DetailFragment extends Fragment {
         realisateurFilm = (TextView) view.findViewById(R.id.realisateurFilm);
         dureeFilm = (TextView) view.findViewById(R.id.dureeFilm);
         btnAjouterComment = (Button) view.findViewById(R.id.btnAjouterComment);
+
+        unCommentaire = (TextView) view.findViewById(R.id.txtCommentaire);
+        unPseudoDate = (TextView) view.findViewById(R.id.txtPseudoDate);
+        uneNote = (TextView) view.findViewById(R.id.txtNote);
 
         btnAjouterComment.setOnClickListener(new View.OnClickListener() {
             @Override
