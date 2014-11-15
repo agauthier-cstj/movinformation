@@ -3,15 +3,17 @@ package ca.qc.cstj.android.movinformation;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,10 +24,14 @@ import com.koushikdutta.ion.Response;
 
 import org.apache.http.HttpStatus;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import ca.qc.cstj.android.movinformation.adapters.CommentaireAdapter;
 import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
+import ca.qc.cstj.android.movinformation.helpers.LimitEditTextNumbers;
 import ca.qc.cstj.android.movinformation.models.Commentaires;
 import ca.qc.cstj.android.movinformation.models.Films;
 
@@ -59,6 +65,12 @@ public class DetailFragment extends Fragment {
     private TextView realisateurFilm;
     private TextView dureeFilm;
 
+    //Pour le commentaire
+    private EditText texteCommentaire;
+    private EditText pseudoCommentaire;
+    private EditText noteCommentaire;
+    private String dateCommentaire;
+
     //Le bouton du fragment
     private Button btnAjouterComment;
 
@@ -91,8 +103,12 @@ public class DetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        loadDetails();
+        loadCommentaires();
+    }
+
+    private void loadDetails() {
         progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des données...",true,false);
-        lstCommentaire = (ListView) getActivity().findViewById(R.id.lstCommentaires);
 
         //On affiche les détails du film
         Ion.with(getActivity())
@@ -112,10 +128,15 @@ public class DetailFragment extends Fragment {
                         progressDialog.dismiss();
                     }
                 });
+    }
+
+    private void loadCommentaires()
+    {
+        lstCommentaire = (ListView) getActivity().findViewById(R.id.lstCommentaires);
 
         //On affiche les commentaires du film
         Ion.with(getActivity())
-                .load(href+"/commentaires")
+                .load(href+"/commentaires?order=yes")
                 .asJsonArray()
                 .withResponse()
                 .setCallback(new FutureCallback<Response<JsonArray>>() {
@@ -150,14 +171,49 @@ public class DetailFragment extends Fragment {
         dureeFilm = (TextView) view.findViewById(R.id.dureeFilm);
         btnAjouterComment = (Button) view.findViewById(R.id.btnAjouterComment);
 
+        texteCommentaire = (EditText) view.findViewById(R.id.editComment);
+        pseudoCommentaire = (EditText) view.findViewById(R.id.pseudoComment);
+        noteCommentaire = (EditText) view.findViewById(R.id.noteComment);
+        //On définit un min et un max pour le EditText de nombre
+        noteCommentaire.setFilters(new InputFilter[]{ new LimitEditTextNumbers("1", "5")});
+        dateCommentaire = getDateTime();
+
+
         btnAjouterComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                JsonObject jsonCommentaire = new JsonObject();
+                jsonCommentaire.addProperty("texte",texteCommentaire.getText().toString());
+                jsonCommentaire.addProperty("note",noteCommentaire.getText().toString());
+                jsonCommentaire.addProperty("auteur",pseudoCommentaire.getText().toString());
+                jsonCommentaire.addProperty("dateHeure",dateCommentaire);
+
+                Ion.with(getActivity())
+                        .load(href+"/commentaires")
+                        .setJsonObjectBody(jsonCommentaire)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject jsonObject) {
+                                Toast.makeText(getActivity(), "Commentaire ajouté avec succès", Toast.LENGTH_SHORT).show();
+                                loadCommentaires();
+                                texteCommentaire.setText("");
+                                noteCommentaire.setText("");
+                                pseudoCommentaire.setText("");
+                            }
+                        });
             }
         });
 
         return view;
+    }
+
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     @Override

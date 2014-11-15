@@ -48,8 +48,12 @@ public class CommentaireAdapter extends ArrayAdapter<Commentaires> {
 
         Commentaires commentaire = getItem(position);
 
+        String date = commentaire.getDate();
+        String[] parties = date.split("T");
+        date = parties[0];
+
         commentairesViewHolder.txtCommentaire.setText(commentaire.getCommentaire());
-        commentairesViewHolder.txtPseudoDate.setText(commentaire.getPseudo()+", "+commentaire.getDate());
+        commentairesViewHolder.txtPseudoDate.setText(commentaire.getPseudo()+", "+date);
         commentairesViewHolder.txtNote.setText("Note: "+commentaire.getNote()+"/5");
 
         return convertView;
