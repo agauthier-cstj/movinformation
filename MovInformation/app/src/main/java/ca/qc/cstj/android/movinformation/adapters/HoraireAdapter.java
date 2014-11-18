@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import ca.qc.cstj.android.movinformation.R;
 import ca.qc.cstj.android.movinformation.models.Cinemas;
 import ca.qc.cstj.android.movinformation.models.Commentaires;
+import ca.qc.cstj.android.movinformation.models.Films;
 import ca.qc.cstj.android.movinformation.models.Horaires;
 
 /**
@@ -29,22 +30,22 @@ public class HoraireAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private ArrayList<Horaires> horaires;
+    private ArrayList<Films> films;
 
-    public HoraireAdapter(Context context, LayoutInflater inflater, ArrayList<Horaires> pHoraires) {
+    public HoraireAdapter(Context context, LayoutInflater inflater, ArrayList<Films> pFilms) {
         mContext = context;
         mInflater = inflater;
-        horaires = pHoraires;
+        films = pFilms;
     }
 
     @Override
     public int getCount() {
-        return horaires.size();
+        return films.size();
     }
 
     @Override
-    public Horaires getItem(int position) {
-        return horaires.get(position);
+    public Films getItem(int position) {
+        return films.get(position);
     }
 
     @Override
@@ -63,22 +64,26 @@ public class HoraireAdapter extends BaseAdapter {
             viewHolder = new HorairesViewHolder();
             viewHolder.txtNomFilm = (TextView) convertView.findViewById(R.id.row_nom_film);
             viewHolder.Date1 = (TextView) convertView.findViewById(R.id.row_date1);
+            viewHolder.Date2 = (TextView) convertView.findViewById(R.id.row_date2);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (HorairesViewHolder) convertView.getTag();
         }
 
-        Horaires horaire = getItem(position);
+        Films film = getItem(position);
 
-        if(horaire.getFilm() != null) {
-            viewHolder.txtNomFilm.setText(horaire.getFilm().getTitre());
+        if(film != null) {
+            viewHolder.txtNomFilm.setText(film.getTitre());
 
-            String date = horaire.getDateHeure().toString();
-            String[] parties = date.split("T");
-            String[] parties2 = parties[1].split(":");
+            String date1 = film.getListeHoraire().get(0).getDateHeure().toString("yyyy-MM-dd HH:mm");
+            if(film.getListeHoraire().size() > 1) {
+                String date2 = film.getListeHoraire().get(1).getDateHeure().toString("yyyy-MM-dd HH:mm");
+                viewHolder.Date2.setText(date2);
+            }
 
-            viewHolder.Date1.setText(parties[0]+", "+parties2[0]+":"+parties2[1]);
+            viewHolder.Date1.setText(date1);
+
         } else {
             viewHolder.txtNomFilm.setText("Nom inconnu");
         }
@@ -90,6 +95,7 @@ public class HoraireAdapter extends BaseAdapter {
     private static class HorairesViewHolder{
         public TextView txtNomFilm;
         public TextView Date1;
+        public TextView Date2;
 
     }
 }

@@ -5,20 +5,17 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/row_nom_film"
+        android:id="@+id/row_nom_cinema"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="18sp"/>
 
     <TextView
-        android:id="@+id/row_date1"
+        android:id="@+id/row_adresse"
         android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:textSize="14sp"/>
-    <TextView
-        android:id="@+id/row_date2"
-        android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:textSize="14sp"/>
+        android:layout_height="28dp"
+        android:textSize="15sp"/>
+
 
 </LinearLayout>

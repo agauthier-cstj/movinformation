@@ -102,7 +102,7 @@ public class CinemaFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                String href = cinemaAdapter.getItem(position).getHref()+"/horaires";
+                String href = cinemaAdapter.getItem(position).getHref()+"/films";
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.container, HoraireFragment.newInstance(href)).addToBackStack("");
@@ -130,7 +130,7 @@ public class CinemaFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             {
                                 cinemas.add(new Cinemas(element.getAsJsonObject()));
                             }
-                            cinemaAdapter = new CinemaAdapter(getActivity(), android.R.layout.simple_list_item_1, cinemas);
+                            cinemaAdapter = new CinemaAdapter(getActivity(), getActivity().getLayoutInflater(), cinemas);
                             lstCinemas.setAdapter((cinemaAdapter));
                         }else{
                          // Autres erreurs

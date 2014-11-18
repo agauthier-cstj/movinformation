@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +43,7 @@ import ca.qc.cstj.android.movinformation.services.ServicesURI;
  * create an instance of this fragment.
  *
  */
-public class HoraireFragment extends Fragment {
+public class HoraireFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String ARG_HREF = "href";
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -50,6 +52,8 @@ public class HoraireFragment extends Fragment {
     private HoraireAdapter horaireAdapter;
 
     private String href;
+    // Variable qui permet le refresh
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,8 +76,15 @@ public class HoraireFragment extends Fragment {
         if(getArguments() != null){
             href = getArguments().getString(ARG_HREF);
         }
+        View rootView = inflater.inflate(R.layout.fragment_horaire, container, false);
 
-        return inflater.inflate(R.layout.fragment_horaire, container, false);
+        lstHoraires = (ListView) getActivity().findViewById(R.id.list_horaires);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swpLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        return rootView;
     }
 
     @Override
@@ -91,23 +102,24 @@ public class HoraireFragment extends Fragment {
     private void loadHoraires() {
         progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des horaires...", true, false);
 
-        // Ici je dois demander au serveur tous les films du cinéma demandé avec ca /cinemas/3/horaires
+        // Ici je dois demander au serveur tous les films du cinéma demandé avec ca /cinemas/3/films
         Ion.with(getActivity())
                 .load(href)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
+                .asJsonArray()
+                .withResponse()
+                .setCallback(new FutureCallback<Response<JsonArray>>() {
                     @Override
-                    public void onCompleted(Exception e, JsonObject jsonObject) {
+                    public void onCompleted(Exception e, Response<JsonArray> jsonArrayResponse) {
                         if(true)
                         {
-                            ArrayList<Horaires> horaires = new ArrayList<Horaires>();
+                            ArrayList<Films> films = new ArrayList<Films>();
 
-                            for (JsonElement element : jsonObject.getAsJsonArray("horaire"))
+                            for (JsonElement element : jsonArrayResponse.getResult())
                             {
-                                horaires.add(new Horaires(element.getAsJsonObject()));
+                                films.add(new Films(element.getAsJsonObject()));
                             }
 
-                            horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(), horaires);
+                            horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(), films);
                             lstHoraires.setAdapter((horaireAdapter));
                         }else{
                             //Erreur 404 - Les horaires n'existent pas.
@@ -156,6 +168,19 @@ public class HoraireFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onRefresh()
+    {
+        swipeRefreshLayout.setRefreshing(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadHoraires();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 
 }

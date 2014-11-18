@@ -1,6 +1,10 @@
 package ca.qc.cstj.android.movinformation.models;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by 1247935 on 2014-10-31.
@@ -15,10 +19,12 @@ public class Films {
     private String realisateur;
     private String imageUrl;
 
+
+    private ArrayList<Horaires> ListeHoraire;
+
     public Films() {}
 
     public Films(JsonObject jsonObject){
-
         href = jsonObject.getAsJsonPrimitive("href").getAsString();
         if (jsonObject.has("titre")) {
             titre = jsonObject.getAsJsonPrimitive("titre").getAsString();
@@ -37,6 +43,17 @@ public class Films {
         }
         if (jsonObject.has("realisateur")) {
             realisateur = jsonObject.getAsJsonPrimitive("realisateur").getAsString();
+        }
+        if (jsonObject.has("horaires")) {
+
+            ListeHoraire = new ArrayList<Horaires>();
+
+            JsonArray horairesTemp = jsonObject.getAsJsonArray("horaires");
+            // Pour chaque horaires, je crée un horaire dans la liste du film actuel.
+            for(JsonElement jsonElement : horairesTemp)
+            {
+                ListeHoraire.add(new Horaires(jsonElement.getAsJsonObject()));
+            }
         }
         try{
             imageUrl = jsonObject.getAsJsonPrimitive("imageUrl").getAsString();
@@ -108,4 +125,13 @@ public class Films {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public ArrayList<Horaires> getListeHoraire() {
+        return ListeHoraire;
+    }
+
+    public void setListeHoraire(ArrayList<Horaires> listeHoraire) {
+        ListeHoraire = listeHoraire;
+    }
 }
+
