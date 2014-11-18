@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -121,8 +122,12 @@ public class FilmFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             }
                             filmAdapter = new FilmAdapter(getActivity(), android.R.layout.simple_list_item_1,films);
                             lstFilms.setAdapter(filmAdapter);
+                        }else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_NOT_FOUND) {
+                            //Erreur 404 - Les films n'existent pas n'existent pas.
+                            Toast.makeText(getActivity(), "Les films n'existent pas.", Toast.LENGTH_SHORT).show();
                         }else{
-                            //Erreur 404 - Les films n'existent pas.
+                            //Erreur 500
+                            Toast.makeText(getActivity(), "Erreur interne.", Toast.LENGTH_SHORT).show();
                         }
                         progressDialog.dismiss();
                     }

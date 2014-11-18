@@ -156,8 +156,12 @@ public class DetailFragment extends Fragment {
                             }
                             commentaireAdapter = new CommentaireAdapter(getActivity(), getActivity().getLayoutInflater(), commentaires);
                             lstCommentaire.setAdapter(commentaireAdapter);
-                        } else {
-                            //Erreur 404 - Les films n'existent pas.
+                        } else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_NOT_FOUND) {
+                            //Erreur 404 - Les commentaires n'existent pas n'existent pas.
+                            Toast.makeText(getActivity(), "Les commentaires n'existent pas.", Toast.LENGTH_SHORT).show();
+                        }else{
+                            //Erreur 500
+                            Toast.makeText(getActivity(), "Erreur interne.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
