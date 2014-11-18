@@ -19,6 +19,7 @@ import ca.qc.cstj.android.movinformation.models.Films;
  * Created by Anthony on 2014-11-11.
  */
 public class CommentaireAdapter extends ArrayAdapter<Commentaires> {
+
     private ArrayList<Commentaires> commentaires;
     private LayoutInflater layoutInflater;
     public JsonArray array;

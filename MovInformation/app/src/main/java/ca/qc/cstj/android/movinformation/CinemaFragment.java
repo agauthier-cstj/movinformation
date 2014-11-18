@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,6 @@ import org.apache.http.HttpStatus;
 import java.util.ArrayList;
 
 import ca.qc.cstj.android.movinformation.adapters.CinemaAdapter;
-import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
 import ca.qc.cstj.android.movinformation.models.Cinemas;
 import ca.qc.cstj.android.movinformation.services.ServicesURI;
 
@@ -37,7 +38,7 @@ import ca.qc.cstj.android.movinformation.services.ServicesURI;
  * create an instance of this fragment.
  *
  */
-public class CinemaFragment extends Fragment {
+public class CinemaFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -45,7 +46,8 @@ public class CinemaFragment extends Fragment {
     private ListView lstCinemas;
     private ProgressDialog progressDialog;
     private CinemaAdapter cinemaAdapter;
-
+    // Variable qui permet le refresh
+    private SwipeRefreshLayout swipeRefreshLayout;
     private OnFragmentInteractionListener mListener;
 
     public static CinemaFragment newInstance(int sectionNumber) {
@@ -69,8 +71,15 @@ public class CinemaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cinema, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_cinema, container, false);
+
+        lstCinemas = (ListView) rootView.findViewById(R.id.list_cinemas);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swpLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        return rootView;
     }
 
     @Override
@@ -157,6 +166,19 @@ public class CinemaFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onRefresh()
+    {
+        swipeRefreshLayout.setRefreshing(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadCinemas();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 
 }

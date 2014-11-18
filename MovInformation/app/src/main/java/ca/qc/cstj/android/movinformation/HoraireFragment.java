@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
@@ -22,6 +24,7 @@ import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 
+import ca.qc.cstj.android.movinformation.adapters.CinemaAdapter;
 import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
 import ca.qc.cstj.android.movinformation.adapters.HoraireAdapter;
 import ca.qc.cstj.android.movinformation.models.Films;
@@ -40,16 +43,16 @@ import ca.qc.cstj.android.movinformation.services.ServicesURI;
  */
 public class HoraireFragment extends Fragment {
     private static final String ARG_HREF = "href";
+    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private ListView lstHoraires;
     private ProgressDialog progressDialog;
     private HoraireAdapter horaireAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String href;
 
     private OnFragmentInteractionListener mListener;
+
 
     // TODO: Rename and change types and number of parameters
     public static HoraireFragment newInstance(String href) {
@@ -66,7 +69,11 @@ public class HoraireFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
     Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_film, container, false);
+        if(getArguments() != null){
+            href = getArguments().getString(ARG_HREF);
+        }
+
+        return inflater.inflate(R.layout.fragment_horaire, container, false);
     }
 
     @Override
@@ -79,48 +86,38 @@ public class HoraireFragment extends Fragment {
         //Comprendre à l'utilisateur que cela peut prendre un peu de temps. - Anthony Gauthier
         loadHoraires();
 
-        lstHoraires.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-               // transaction.replace(R.id.container, DetailFragment.newInstance(href)).addToBackStack("");
-                transaction.commit();
-            }
-        });
     }
 
     private void loadHoraires() {
         progressDialog = ProgressDialog.show(getActivity(), "MovInformation", "Chargement des horaires...", true, false);
 
-
-
+        // Ici je dois demander au serveur tous les films du cinéma demandé avec ca /cinemas/3/horaires
         Ion.with(getActivity())
-                .load(ServicesURI.CINEMAS_SERVICE_URI)
-                .asJsonArray()
-                .withResponse()
-                .setCallback(new FutureCallback<Response<JsonArray>>() {
+                .load(href)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
                     @Override
-                    public void onCompleted(Exception e, Response<JsonArray> jsonArrayResponse) {
-
-                        if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_OK)
+                    public void onCompleted(Exception e, JsonObject jsonObject) {
+                        if(true)
                         {
                             ArrayList<Horaires> horaires = new ArrayList<Horaires>();
-                            JsonArray jsonArray = jsonArrayResponse.getResult();
-                            for(JsonElement element : jsonArray)
+
+                            for (JsonElement element : jsonObject.getAsJsonArray("horaire"))
                             {
                                 horaires.add(new Horaires(element.getAsJsonObject()));
                             }
-                            horaireAdapter = new HoraireAdapter(getActivity().getBaseContext(), getActivity().getLayoutInflater(), horaires);
-                            lstHoraires.setAdapter(horaireAdapter);
+
+                            horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(), horaires);
+                            lstHoraires.setAdapter((horaireAdapter));
                         }else{
-                            //Erreur 404 - Les films n'existent pas.
+                            //Erreur 404 - Les horaires n'existent pas.
                         }
                         progressDialog.dismiss();
                     }
                 });
+
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

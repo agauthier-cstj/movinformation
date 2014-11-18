@@ -10,24 +10,24 @@ import ca.qc.cstj.android.movinformation.helpers.DateParser;
  * Created by 1232295 on 2014-11-14.
  */
 public class Horaires {
-    private String nomFilm;
+    private Films film;
     private DateTime dateHeure;
 
 
     public Horaires() {}
 
     public Horaires(JsonObject jsonObject){
-        nomFilm = jsonObject.getAsJsonPrimitive("nomFilm").getAsString();
+        film = new Films(jsonObject.getAsJsonObject("film"));
         dateHeure = DateParser.ParseIso(jsonObject.getAsJsonPrimitive("dateHeure").getAsString());
 
     }
 
-    public String getNomFilm() {
-        return nomFilm;
+    public Films getFilm() {
+        return film;
     }
 
-    public void setNomFilm(String nomFilm) {
-        this.nomFilm = nomFilm;
+    public void setFilm(Films film) {
+        this.film = film;
     }
 
     public DateTime getDateHeure() {

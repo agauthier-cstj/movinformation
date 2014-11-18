@@ -18,7 +18,8 @@ public class CinemaAdapter extends GenericArrayAdapter<Cinemas> {
     @Override
     public void update(TextView textView, Cinemas object) {
         String titre = object.getNom().toString();
-        textView.setText(titre);
+        String adresse = object.getAdresse().toString();
+        textView.setText(titre+"\n"+adresse);
     }
 
 }
