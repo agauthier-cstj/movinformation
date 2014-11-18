@@ -69,6 +69,14 @@ public class CinemaFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //On remet le titre du fragment a ce qu'il doit être
+        getActivity().getActionBar()
+                .setTitle(R.string.title_section1);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cinema, container, false);

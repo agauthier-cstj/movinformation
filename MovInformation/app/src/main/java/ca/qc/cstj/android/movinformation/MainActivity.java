@@ -50,12 +50,12 @@ public class MainActivity extends Activity
         switch (position){
             case 0:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, CinemaFragment.newInstance(position + 1))
+                        .replace(R.id.container, CinemaFragment.newInstance(position + 1)).addToBackStack("")
                         .commit();
                 break;
             case 1:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, FilmFragment.newInstance(position + 1))
+                        .replace(R.id.container, FilmFragment.newInstance(position + 1)).addToBackStack("")
                         .commit();
                 break;
         }

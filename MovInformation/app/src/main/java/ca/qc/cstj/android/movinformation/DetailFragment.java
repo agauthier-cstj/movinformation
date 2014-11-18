@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ public class DetailFragment extends Fragment {
     private TextView classeFilm;
     private TextView realisateurFilm;
     private TextView dureeFilm;
+    private ImageView imageFilm;
 
     //Pour le commentaire
     private EditText texteCommentaire;
@@ -119,6 +121,10 @@ public class DetailFragment extends Fragment {
                     public void onCompleted(Exception e, JsonObject jsonObject) {
                         film = new Films(jsonObject);
 
+                        Ion.with(imageFilm)
+                                .placeholder(R.drawable.notfound)
+                                .load(film.getImageUrl().toString());
+
                         titreFilm.setText(film.getTitre());
                         paysFilm.setText(film.getPays());
                         genreFilm.setText(film.getGenre());
@@ -170,6 +176,8 @@ public class DetailFragment extends Fragment {
         realisateurFilm = (TextView) view.findViewById(R.id.realisateurFilm);
         dureeFilm = (TextView) view.findViewById(R.id.dureeFilm);
         btnAjouterComment = (Button) view.findViewById(R.id.btnAjouterComment);
+
+        imageFilm = (ImageView) view.findViewById(R.id.imageFilm);
 
         texteCommentaire = (EditText) view.findViewById(R.id.editComment);
         pseudoCommentaire = (EditText) view.findViewById(R.id.pseudoComment);
@@ -225,6 +233,14 @@ public class DetailFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //On remet le titre du fragment a ce qu'il doit être
+        getActivity().getActionBar()
+                .setTitle(R.string.title_section2);
     }
 
     @Override

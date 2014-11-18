@@ -43,6 +43,10 @@ public class CommentaireAdapter extends ArrayAdapter<Commentaires> {
             commentairesViewHolder.txtCommentaire = (TextView)convertView.findViewById(R.id.txtCommentaire);
             commentairesViewHolder.txtPseudoDate = (TextView)convertView.findViewById(R.id.txtPseudoDate);
             commentairesViewHolder.txtNote = (TextView)convertView.findViewById(R.id.txtNote);
+
+
+            convertView.setTag(commentairesViewHolder);
+
         } else {
             commentairesViewHolder = (CommentairesViewHolder)convertView.getTag();
         }
@@ -54,8 +58,8 @@ public class CommentaireAdapter extends ArrayAdapter<Commentaires> {
         date = parties[0];
 
         commentairesViewHolder.txtCommentaire.setText(commentaire.getCommentaire());
-        commentairesViewHolder.txtPseudoDate.setText(commentaire.getPseudo()+", "+date);
-        commentairesViewHolder.txtNote.setText("Note: "+commentaire.getNote()+"/5");
+        commentairesViewHolder.txtPseudoDate.setText(commentaire.getPseudo() + ", " + date);
+        commentairesViewHolder.txtNote.setText("Note: " + commentaire.getNote() + "/5");
 
         return convertView;
     }

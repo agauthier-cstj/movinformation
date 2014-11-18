@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +32,14 @@ import ca.qc.cstj.android.movinformation.services.ServicesURI;
 /*
 * Créer par Anthony Gauthier - 5 Novembre 2014
 * */
-public class FilmFragment extends Fragment {
+public class FilmFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     //Variables - Anthony Gauthier
     private ListView lstFilms;
     private ProgressDialog progressDialog;
     private FilmAdapter filmAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     //Retourne une nouvelle instance du fragment film - Anthony Gauthier
     public static FilmFragment newInstance(int sectionNumber) {
@@ -52,8 +55,15 @@ public class FilmFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_film, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swpLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_film, container, false);
+        return rootView;
     }
 
     //Méthode qui appelle la méthode pour remplir la ListView et créer un "listener" pour savoir si l'utilisateur a cliqué sur un film de la liste. - Anthony Gauthier
@@ -79,6 +89,14 @@ public class FilmFragment extends Fragment {
                 transaction.commit();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //On remet le titre du fragment a ce qu'il doit être
+        getActivity().getActionBar()
+                .setTitle(R.string.title_section2);
     }
 
     //Sert à remplir la ListView - Anthony Gauthier
@@ -121,5 +139,19 @@ public class FilmFragment extends Fragment {
     //Interface obligatoire à avoir  - Anthony Gauthier
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onRefresh()
+    {
+        swipeRefreshLayout.setRefreshing(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadFilms();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 }

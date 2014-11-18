@@ -12,9 +12,11 @@
     <string name="testdetail">Detail Fragment</string>
     <string name="testhoraire">Horaire Fragment</string>
     <string name="testfilm">Film Fragment</string>
-    <string name="lblCommentaire">Commentaire</string>
+    <string name="lblCommentaire">Commentaires</string>
     <string name="lblAjoutCommentaire">Ajouter un commentaire</string>
     <string name="btnComment">Ajouter commentaire</string>
     <string name="noteSurDix">/10</string>
     <string name="noteSurCinq">/5</string>
+    <string name="Pseudonyme">Pseudonyme</string>
+    <string name="Votre_Commentaire">Votre commentaire</string>
 </resources>

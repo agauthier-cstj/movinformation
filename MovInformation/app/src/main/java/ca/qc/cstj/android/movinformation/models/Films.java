@@ -45,8 +45,6 @@ public class Films {
         {}
     }
 
-    public String toString(){return "allo";}
-
     public String getHref() {
         return href;
     }
