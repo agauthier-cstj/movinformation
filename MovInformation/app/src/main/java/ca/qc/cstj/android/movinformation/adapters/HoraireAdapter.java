@@ -4,21 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
 import ca.qc.cstj.android.movinformation.R;
-import ca.qc.cstj.android.movinformation.models.Cinemas;
-import ca.qc.cstj.android.movinformation.models.Commentaires;
 import ca.qc.cstj.android.movinformation.models.Films;
-import ca.qc.cstj.android.movinformation.models.Horaires;
 
 /**
  * Created by 1232295 on 2014-11-14.
@@ -64,7 +56,6 @@ public class HoraireAdapter extends BaseAdapter {
             viewHolder = new HorairesViewHolder();
             viewHolder.txtNomFilm = (TextView) convertView.findViewById(R.id.row_nom_film);
             viewHolder.Date1 = (TextView) convertView.findViewById(R.id.row_date1);
-            viewHolder.Date2 = (TextView) convertView.findViewById(R.id.row_date2);
 
             convertView.setTag(viewHolder);
         } else {
@@ -77,12 +68,8 @@ public class HoraireAdapter extends BaseAdapter {
             viewHolder.txtNomFilm.setText(film.getTitre());
 
             String date1 = film.getListeHoraire().get(0).getDateHeure().toString("yyyy-MM-dd HH:mm");
-            if(film.getListeHoraire().size() > 1) {
-                String date2 = film.getListeHoraire().get(1).getDateHeure().toString("yyyy-MM-dd HH:mm");
-                viewHolder.Date2.setText(date2);
-            }
 
-            viewHolder.Date1.setText(date1);
+            viewHolder.Date1.setText(film.getHoraireString());
 
         } else {
             viewHolder.txtNomFilm.setText("Nom inconnu");
@@ -95,7 +82,6 @@ public class HoraireAdapter extends BaseAdapter {
     private static class HorairesViewHolder{
         public TextView txtNomFilm;
         public TextView Date1;
-        public TextView Date2;
 
     }
 }

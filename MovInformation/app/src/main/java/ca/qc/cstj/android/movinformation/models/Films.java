@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 /**
@@ -60,6 +62,35 @@ public class Films {
         }
         catch (Exception e)
         {}
+    }
+
+    // Fonction qui permet de retourner les horaires du films dans les contraintes de Yannick.
+    public String getHoraireString() {
+        StringBuilder string = new StringBuilder();
+
+        DateTime jour = null;
+
+        DateTime jourEnCours = null;
+
+        // Parcours tous les horaires du films pour mettre toutes les représentations de la journée à droite de la date.
+        for (Horaires horaire : ListeHoraire)
+        {
+            // Met la date en mémoire.
+            jourEnCours = new DateTime(horaire.getDateHeure().toString());
+
+            if(jour == null){
+                jour = jourEnCours;
+                string.append(jourEnCours.toString("yyyy-MM-dd"));
+
+            }else if (jour.getDayOfMonth() != jourEnCours.getDayOfMonth()){
+                string.append("\n").append(jourEnCours.toString("yyyy-MM-dd"));
+            }
+
+            jour = jourEnCours;
+            string.append(" ").append(jourEnCours.toString("HH:mm"));
+        }
+
+        return string.toString();
     }
 
     public String getHref() {

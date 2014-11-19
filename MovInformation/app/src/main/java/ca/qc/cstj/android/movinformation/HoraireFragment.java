@@ -1,11 +1,11 @@
 package ca.qc.cstj.android.movinformation;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -13,11 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
@@ -26,12 +25,8 @@ import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 
-import ca.qc.cstj.android.movinformation.adapters.CinemaAdapter;
-import ca.qc.cstj.android.movinformation.adapters.FilmAdapter;
 import ca.qc.cstj.android.movinformation.adapters.HoraireAdapter;
 import ca.qc.cstj.android.movinformation.models.Films;
-import ca.qc.cstj.android.movinformation.models.Horaires;
-import ca.qc.cstj.android.movinformation.services.ServicesURI;
 
 
 /**
@@ -93,9 +88,25 @@ public class HoraireFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         lstHoraires = (ListView) getActivity().findViewById(R.id.list_horaires);
 
-        //Fonction qui charge les films dans la liste, avec un ProgressDialog pour faire
+        //Fonction qui charge les horaires dans la liste, avec un ProgressDialog pour faire
         //Comprendre à l'utilisateur que cela peut prendre un peu de temps. - Anthony Gauthier
         loadHoraires();
+
+        // Fonction qui amèene l'utilisateur au détail du film.
+        lstHoraires.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+
+                String href = horaireAdapter.getItem(position).getHref();
+
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, DetailFragment.newInstance(href)).addToBackStack("");
+                transaction.commit();
+            }
+        });
+
 
     }
 
