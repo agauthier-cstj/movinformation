@@ -76,15 +76,15 @@ public class HoraireFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if(getArguments() != null){
             href = getArguments().getString(ARG_HREF);
         }
-        View rootView = inflater.inflate(R.layout.fragment_horaire, container, false);
+        View bView = inflater.inflate(R.layout.fragment_horaire, container, false);
 
         lstHoraires = (ListView) getActivity().findViewById(R.id.list_horaires);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swpLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) bView.findViewById(R.id.swpLayout);
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        return rootView;
+        return bView;
     }
 
     @Override
@@ -110,7 +110,8 @@ public class HoraireFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 .setCallback(new FutureCallback<Response<JsonArray>>() {
                     @Override
                     public void onCompleted(Exception e, Response<JsonArray> jsonArrayResponse) {
-                        if(true)
+						// Test pour savoir le status envoyé code 201
+                        if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_OK)
                         {
                             ArrayList<Films> films = new ArrayList<Films>();
 
@@ -121,9 +122,16 @@ public class HoraireFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                             horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(), films);
                             lstHoraires.setAdapter((horaireAdapter));
+                        }else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR){
+							// Erreur interne du serveur
+							Toast.makeText(getActivity().getApplicationContext(), "Erreur au niveau du serveur.", Toast.LENGTH_LONG).show();
+						}else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_NOT_FOUND) { 
+							// Test pour savoir le status envoyé est le code 404 s'il n'a aucun cinémas.
+                            Toast.makeText(getActivity().getApplicationContext(), "Aucune horaire disponible pour ce cinéma.", Toast.LENGTH_LONG).show();
                         }else{
-                            //Erreur 404 - Les horaires n'existent pas.
-                        }
+							// Autres erreurs possible
+							Toast.makeText(getActivity().getApplicationContext(), "Erreur inconnu.", Toast.LENGTH_LONG).show();
+						}
                         progressDialog.dismiss();
                     }
                 });
