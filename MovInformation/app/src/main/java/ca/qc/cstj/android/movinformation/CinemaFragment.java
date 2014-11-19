@@ -132,9 +132,16 @@ public class CinemaFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             }
                             cinemaAdapter = new CinemaAdapter(getActivity(), getActivity().getLayoutInflater(), cinemas);
                             lstCinemas.setAdapter((cinemaAdapter));
-                        }else{
-                         // Autres erreurs
-                        }
+                        }else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR){
+							// Erreur interne du serveur
+							Toast.makeText(getActivity().getApplicationContext(), "Erreur au niveau du serveur.", Toast.LENGTH_LONG).show();
+						}else if(jsonArrayResponse.getHeaders().getResponseCode() == HttpStatus.SC_NOT_FOUND) { 
+							// Test pour savoir le status envoyé est le code 404 s'il n'a aucun cinémas.
+                            Toast.makeText(getActivity().getApplicationContext(), "Aucun cinéma disponibles.", Toast.LENGTH_LONG).show();
+						}else{
+							// Autres erreurs possible
+							Toast.makeText(getActivity().getApplicationContext(), "Erreur inconnu.", Toast.LENGTH_LONG).show();
+						}
                         progressDialog.dismiss();
                     }
                 });
